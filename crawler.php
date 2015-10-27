@@ -87,8 +87,8 @@ $dom    =   new DOMDocument;
 $dom->loadHTML($html);
 
 foreach ($dom->getElementsByTagName('div') as $tag) {
-    if ($tag->getAttribute('class') === 'col-sm-12 row-space-2 col-md-6') {
-        echo $tag->nodeValue;
+    if( $tag->getAttribute('data-lat') != ""){
+        echo $tag->getAttribute('data-lat');
     }
 }
 
