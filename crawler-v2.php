@@ -1,8 +1,9 @@
 <?php
 
 require_once('ganon.php');
+require_once('dbconnect.php');
 
-$html = file_get_dom('https://www.airbnb.com/s/Fukuoka-Prefecture--Japan?guests=&checkin=10%2F29%2F2015&checkout=10%2F31%2F2015&ss_id=6bkqp7rq&source=bb');
+$html = file_get_dom('https://www.airbnb.com/s/Fukuoka-Prefecture--Japan?checkin=10%2F30%2F2015&checkout=11%2F01%2F2015&guests=&ss_id=g1qzuyaq&page=1');
 
 $doc = new DOMDocument();
 @$doc->loadHTML($html);
@@ -25,9 +26,9 @@ foreach($articles as $container) {
 
     foreach($container->getElementsByTagName('span') as $span) {
         if($span->parentNode->getAttribute('class') == "panel-overlay-top-right wl-social-connection-panel") {
-            $data["data-img"] = $span->getAttribute('data-img');
+            $data["data-img"]= $span->getAttribute('data-img');
             $data["data-name"] = $span->getAttribute('data-name');
-            $data["data-address"] = $span->getAttribute('data-address');
+            $data["data-address"]= $span->getAttribute('data-address');
             $data["data-hosting_id"] = $span->getAttribute('data-hosting_id');
             $data["data-price"] = $span->getAttribute('data-price');
             $data["data-review_count"] = $span->getAttribute('data-review_count');
@@ -37,5 +38,21 @@ foreach($articles as $container) {
             $data["data-star_rating"] = $span->getAttribute('data-star_rating');
         }
     }
-    print_r($data);
+
+
+    $ins = 'INSERT INTO t_sample(id, user, name, address, price, reviewcount, rating)
+     VALUES("'.$data["data-id"].'", "'.$data["data-user"].'", "'
+        .$data["data-name"].'", "'.$data["data-address"].'", "'
+        .$data["data-price"].'", "'.$data["data-review_count"].'", "'
+        .$data["data-star_rating"].'")';
+
+    if(mysqli_query($conn, $ins)){
+        echo "New record created successfully <br>";
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+
+    //print_r($data);
 }
+
+//$conn->close();
